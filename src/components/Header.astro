@@ -11,10 +11,11 @@ type Author = {
 type Note = {
   symbol: string;
   text: string;
+  breakBefore?: boolean;
 };
 
 type Link = {
-  url: string;
+  url?: string;
   name: string;
   icon?: string;
 };
@@ -49,7 +50,7 @@ const hasBackground = Astro.slots.has("background");
   }
   <div
     class:list={[
-      "relative z-10 mx-auto flex max-w-[50rem] flex-col items-center px-6 text-center",
+      "relative z-10 mx-auto flex max-w-[80rem] flex-col items-center px-6 text-center",
       hasBackground
         ? "gap-10 text-white prose-headings:text-white [text-shadow:0_0_8px_rgba(0,0,0,0.6)]"
         : "gap-6",
@@ -88,7 +89,8 @@ const hasBackground = Astro.slots.has("background");
             // prettier-ignore
             notes.map((note, index, array) => (
               <span>
-                <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 ? "," : ""}
+                {note.breakBefore && <br />}
+                <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 && !array[index + 1]?.breakBefore ? "," : ""}
               </span>
             ))
           }
@@ -98,17 +100,41 @@ const hasBackground = Astro.slots.has("background");
     {
       links && (
         <div class="not-prose flex flex-row flex-wrap justify-center gap-2">
-          {links.map((link) => (
-            <a
-              href={link.url}
-              class:list={["flex flex-row items-center gap-2 rounded-full px-5 py-2 text-lg hover:no-underline",
-                hasBackground ? "bg-white hover:bg-zinc-200 text-zinc-800 text-shadow-none shadow-[0_0_8px_rgba(0,0,0,0.6)]" : "bg-zinc-800 text-white hover:bg-black dark:text-zinc-900 dark:hover:bg-zinc-50 dark:bg-zinc-200"
-              ]}
-            >
-              {link.icon && <Icon name={link.icon} />}
-              <span>{link.name}</span>
-            </a>
-          ))}
+          {links.map((link) =>
+            link.url ? (
+              <a
+                href={link.url}
+                class:list={[
+                  "relative flex flex-row items-center gap-2 rounded-full px-5 py-2 text-lg hover:no-underline",
+                  hasBackground
+                    ? "bg-white hover:bg-zinc-200 text-zinc-800 text-shadow-none shadow-[0_0_8px_rgba(0,0,0,0.6)]"
+                    : "bg-zinc-800 text-white hover:bg-black dark:text-zinc-900 dark:hover:bg-zinc-50 dark:bg-zinc-200",
+                ]}
+              >
+                {link.icon && <Icon name={link.icon} />}
+                <span>{link.name}</span>
+              </a>
+            ) : (
+              <span
+                class:list={[
+                  "group relative flex cursor-default flex-row items-center gap-2 rounded-full px-5 py-2 text-lg",
+                  hasBackground
+                    ? "bg-white text-zinc-800 text-shadow-none shadow-[0_0_8px_rgba(0,0,0,0.6)]"
+                    : "bg-zinc-800 text-white dark:text-zinc-900 dark:bg-zinc-200",
+                ]}
+                aria-disabled="true"
+              >
+                {link.icon && <Icon name={link.icon} />}
+                <span>{link.name}</span>
+                <span
+                  class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-zinc-100 dark:text-zinc-900"
+                  role="tooltip"
+                >
+                  Coming soon
+                </span>
+              </span>
+            ),
+          )}
         </div>
       )
     }
