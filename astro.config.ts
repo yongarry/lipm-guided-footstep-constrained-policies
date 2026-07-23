@@ -15,6 +15,7 @@ import astroExpressiveCode from "astro-expressive-code";
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
+    assetsInclude: ["**/*.MOV", "**/*.mov"],
   },
   markdown: {
     remarkPlugins: [remarkMath],

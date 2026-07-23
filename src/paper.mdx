@@ -8,14 +8,19 @@ thumbnail: thumbnail.png
 
 import Header from "./components/Header.astro";
 import Video from "./components/Video.astro";
+import YouTubeVideo from "./components/YouTubeVideo.astro";
 import HighlightedSection from "./components/HighlightedSection.astro";
-import SmallCaps from "./components/SmallCaps.astro";
 import Figure from "./components/Figure.astro";
 import Picture from "./components/Picture.astro";
 import Wide from "./components/Wide.astro";
 
 import supplementaryVideo from "./assets/supplementary_video.mp4";
-import g1SimExp from "./assets/g1_sim_exp.png";
+import footHeightVideo from "./assets/footheight.MOV";
+import frequencyVideo from "./assets/frequency.MOV";
+import roughTerrainVideo from "./assets/rough_terrain.mp4";
+import pushExp1Video from "./assets/push_exp1_blur.mp4";
+import pushExp2Video from "./assets/push_exp2_blur.mp4";
+import g1SimVideo from "./assets/g1_sim.mp4";
 
 <Header
   title="Learning Footstep Constrained Policies Guided by Linear Inverted Pendulum Model for Humanoid Robots"
@@ -42,17 +47,15 @@ import g1SimExp from "./assets/g1_sim_exp.png";
   ]}
   links={[
     { name: "Paper", url: "./ACCESS_SJY.pdf", icon: "ri:file-pdf-2-line" },
-    { name: "Video", url: "#supplementary-video", icon: "ri:movie-line" },
+    { name: "Video", url: "#videos", icon: "ri:movie-line" },
     { name: "Code", icon: "ri:github-line" },
   ]}
 />
 
-<Wide>
-  <Figure>
-    <Picture slot="figure" src="../assets/framework.pdf" alt="Overview of the proposed control framework integrating the LIPM with DRL" priority />
-    <Fragment slot="caption">**Overview of the proposed control framework:** The LIPM is used to generate a reference CoM trajectory that guides the policy toward stable motion patterns. The trained policy outputs joint torques to control the humanoid robot to land its swing foot in the designated configuration.</Fragment>
-  </Figure>
-</Wide>
+<Figure>
+  <Video slot="figure" src={supplementaryVideo} id="supplementary-video" />
+  <Fragment slot="caption">Supplementary video: the trained policy executing footstep commands in simulation and on real hardware, including stepping stones traversal and push recovery.</Fragment>
+</Figure>
 
 <HighlightedSection>
 
@@ -66,28 +69,55 @@ Recent advances in Deep Reinforcement Learning based control policies for legged
 
 An online LIPM-based preview controller turns arbitrary foothold and gait parameter commands into reference CoM and feet trajectories, and a torque-level policy trained with PPO learns to track them. This model guidance yields stable, consistent motion patterns, while learning provides robustness to model mismatch and real-world uncertainties.
 
-## Video
+<Wide>
+  <Figure>
+    <Picture slot="figure" src="../assets/framework.pdf" alt="Overview of the proposed control framework integrating the LIPM with DRL" priority />
+    <Fragment slot="caption">**Overview of the proposed control framework:** The LIPM is used to generate a reference CoM trajectory that guides the policy toward stable motion patterns. The trained policy outputs joint torques to control the humanoid robot to land its swing foot in the designated configuration.</Fragment>
+  </Figure>
+</Wide>
+
+## Videos
+
+Command tracking under foot-height and frequency variations:
+
+<div class="not-prose grid grid-cols-1 gap-4 md:grid-cols-2">
+  <Figure>
+    <Video slot="figure" src={footHeightVideo} aspect="portrait" />
+    <Fragment slot="caption">Foot-height command variation</Fragment>
+  </Figure>
+  <Figure>
+    <Video slot="figure" src={frequencyVideo} aspect="portrait" />
+    <Fragment slot="caption">Frequency command variation</Fragment>
+  </Figure>
+</div>
+
+Robustness tests against rough terrain and external pushes:
+
+<div class="not-prose grid grid-cols-1 gap-4 md:grid-cols-2">
+  <Figure>
+    <Video slot="figure" src={roughTerrainVideo} />
+    <Fragment slot="caption">Rough terrain</Fragment>
+  </Figure>
+  <Figure>
+    <Video slot="figure" src={pushExp1Video} />
+    <Fragment slot="caption">Push recovery 1</Fragment>
+  </Figure>
+  <Figure>
+    <Video slot="figure" src={pushExp2Video} />
+    <Fragment slot="caption">Push recovery 2</Fragment>
+  </Figure>
+  <Figure>
+    <YouTubeVideo slot="figure" videoId="HpkdVzw1smo" />
+    <Fragment slot="caption">Robustness test</Fragment>
+  </Figure>
+</div>
+
+Cross-platform evaluation on the Unitree G1 in simulation:
 
 <Figure>
-  <Video slot="figure" src={supplementaryVideo} id="supplementary-video" />
-  <Fragment slot="caption">Supplementary video: the trained policy executing footstep commands in simulation and on real hardware, including stepping stones traversal and push recovery.</Fragment>
+  <Video slot="figure" src={g1SimVideo} />
+  <Fragment slot="caption">Unitree G1 simulation</Fragment>
 </Figure>
-
-## Experiments
-
-<Wide>
-  <Figure>
-    <Picture slot="figure" src="../assets/main_exp.pdf" alt="Snapshots of the trained policy crossing stepping stones in simulation and on real hardware" />
-    <Fragment slot="caption">**Snapshots of the trained policy executing a sequence of footstep commands in simulation (a) and on real hardware (b):** The policy successfully drives the robot across stepping stones. The same scenario is also tested in simulation with an additional 30 kg of mass added to the base link with no performance degradation. In the real-robot snapshots, <SmallCaps>ArUco</SmallCaps> markers depict the stepping stones.</Fragment>
-  </Figure>
-</Wide>
-
-<Wide>
-  <Figure>
-    <Picture slot="figure" src={g1SimExp} alt="Snapshots of the proposed policy executing arbitrary footstep commands on the Unitree G1 humanoid in simulation" />
-    <Fragment slot="caption">**Unitree G1 humanoid executing arbitrary footstep commands in simulation:** Despite the G1 having a different morphology, mass distribution, and joint configuration from the primary platform, the same framework accurately executes commanded footholds without modifications to the reward structure, observation space, or sim-to-real transfer strategy.</Fragment>
-  </Figure>
-</Wide>
 
 ## BibTeX citation
 
